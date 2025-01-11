@@ -1,0 +1,72 @@
+Given a tournament configuration:
+- It should accept valid date ranges, participants, and stage settings
+- It should reject configurations with missing required fields
+- It should validate time control settings match tournament rules (15+10 regular, 3+5 blitz)
+- It should require all participants to be unique
+
+Given a list of games from the API:
+- It should filter only games within tournament date range
+- It should only include games between registered tournament participants
+- It should only include games with correct time control (15+10)
+- It should only include games marked as Tournament type
+- It should only include games on 6x6 boards
+- It should recognize paired games between players (alternating colors)
+- It should identify incomplete match pairs
+
+Given a group stage tournament:
+- It should calculate correct points (2 for win, 1 for draw)
+- It should track games played per week for each player
+- It should identify players not meeting the 2 matches per week requirement
+- It should correctly apply head-to-head tiebreaker
+- It should correctly calculate Sonneborn-Berger scores for ties
+- It should identify when blitz tiebreakers are needed
+- It should determine group winners based on all tiebreaker rules
+- It should handle multiple groups if configured
+
+Given a knockout stage tournament:
+- It should generate correct bracket from group winners
+- It should track match progress through the bracket
+- It should handle blitz tiebreakers in elimination matches
+- It should determine tournament winner when all matches complete
+
+Given tournament modifications:
+- It should allow withdrawing a player
+- It should recalculate standings when games are overridden
+- It should preserve original game results even when overridden
+- It should handle manual point adjustments if supported
+
+Given a request to override a game result:
+- It should require an override reason to be specified
+- It should track who made the override and when
+- It should preserve the original game result in history
+- It should recalculate standings based on the new result
+- It should validate the override doesn't create invalid color alternation
+- It should prevent overriding games that haven't happened yet
+- It should prevent overriding games outside tournament date range
+
+Given a request to withdraw a player:
+- It should require a withdrawal reason to be specified
+- It should track withdrawal date and who recorded it
+- It should handle not-yet-played matches appropriately
+- It should preserve results of already-played matches
+- It should recalculate standings excluding future matches
+- It should prevent withdrawn players from being re-added
+- It should validate group still has minimum required players
+
+Given a tournament scoring error:
+- It should log the original game data that caused the error
+- It should log the tournament state at time of error
+- It should log which rule or validation failed
+- It should include timestamp and context of the error
+- It should record stack trace for debugging
+- It should identify which participants were involved
+- It should suggest potential fixes if pattern is recognized
+
+Given invalid input data:
+- It should log the specific validation rule that failed
+- It should log the exact data that caused the failure
+- It should provide clear error messages for API consumers
+- It should distinguish between missing and invalid data
+- It should identify if error is from API data or manual input
+- It should batch multiple validation errors in one response
+- It should suggest valid values where appropriate
