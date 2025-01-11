@@ -14,3 +14,17 @@ export const GameResultTypes = {
   WHITE_FORFEIT: "1-0",
   BLACK_FORFEIT: "0-1",
 } as const satisfies Record<string, GameResultType>;
+
+export const WINS_FOR_WHITE: GameResultType[] = [
+  GameResultTypes.WHITE_ROAD,
+  GameResultTypes.WHITE_FLAT,
+  GameResultTypes.WHITE_FORFEIT,
+] as const;
+
+export const WINS_FOR_BLACK: GameResultType[] = [
+  GameResultTypes.BLACK_ROAD,
+  GameResultTypes.BLACK_FLAT,
+  GameResultTypes.BLACK_FORFEIT,
+] as const;
+
+export const TIES: GameResultType[] = [GameResultTypes.DRAW] as const;

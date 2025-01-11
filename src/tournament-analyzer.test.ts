@@ -2,9 +2,10 @@ import { describe, it } from "node:test";
 import assert from "node:assert";
 
 import { analyzeTournamentProgress } from "./tournament-analyzer.ts";
-import type { TournamentInfo, TournamentPlayer } from "./types.ts";
-import type { GameResult } from "PlaytakGamesApi";
 import { GameResultTypes } from "./constants.ts";
+
+import type { TournamentInfo, TournamentPlayer } from "./types.ts";
+import type { GameResult } from "./playtak-api/types.ts";
 
 let gameResultCounter = 1;
 
@@ -70,8 +71,14 @@ describe("Given tournament with grouped players", () => {
     });
 
     it("should return players with scores", () => {
-      assert(status.players.every((player: TournamentPlayer) => player.score && player.score >= 0));
+      assert(
+        status.players.every(
+          (player: TournamentPlayer) => player.score !== undefined && player.score >= 0
+        )
+      );
     });
+
+    it.todo("confirm we are using the correct score scheme");
 
     it.todo("reads in only records within the date range");
   });
