@@ -8,13 +8,23 @@
   },
   "scripts": {
     "test": "node --experimental-strip-types --test",
-    "start": "node --experimental-strip-types src/cli-driver.ts"
+    "start": "node --experimental-strip-types src/cli-driver.ts",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --cache --fix",
+    "format": "prettier --cache --write \"src/**/*.ts\""
   },
   "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^22.10.5"
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^22.10.5",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript-eslint": "^8.19.1"
   }
 }
