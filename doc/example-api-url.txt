@@ -1,0 +1,1 @@
+https://api.playtak.com/v1/games-history?page=0&limit=50&type=Tournament&mirror=true
