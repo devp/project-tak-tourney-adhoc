@@ -7,8 +7,9 @@
     "doc": "doc"
   },
   "scripts": {
-    "start": "node src/cli-driver.ts"
+    "start": "node --experimental-strip-types src/cli-driver.ts"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
