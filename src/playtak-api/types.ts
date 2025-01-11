@@ -1,4 +1,4 @@
-export namespace PlaytakGamesApi {
+declare module 'PlaytakGamesApi' {
   export type GameResultType = "R-0" | "0-R" | "F-0" | "0-F" | "1/2-1/2" | "1-0" | "0-1";
 
   export type GameResult = {
@@ -22,7 +22,7 @@ export namespace PlaytakGamesApi {
     rating_change_black: number;
     extra_time_amount: number;
     extra_time_trigger: number;
-  }
+  };
 
   export type ListResponse = {
     items: GameResult[];
@@ -30,5 +30,5 @@ export namespace PlaytakGamesApi {
     page: number;
     perPage: number;
     totalPages: number;
-  }
+  };
 }
