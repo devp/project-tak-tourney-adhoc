@@ -7,6 +7,7 @@
     "doc": "doc"
   },
   "scripts": {
+    "test": "node --experimental-strip-types --test",
     "start": "node --experimental-strip-types src/cli-driver.ts"
   },
   "type": "module",
