@@ -1,0 +1,18 @@
+{
+  "name": "project-tak-tourney-adhoc",
+  "version": "1.0.0",
+  "description": "This is a standalone TypeScript library for taking playtak.com API inputs and outputting tournament information.",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "start": "node src/cli-driver.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.5"
+  }
+}
