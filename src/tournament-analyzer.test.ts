@@ -3,6 +3,6 @@ import assert from "node:assert";
 
 import { analyzeTournamentProgress } from "./tournament-analyzer.ts";
 
-test('placeholder', () => {
-    assert.ok(analyzeTournamentProgress);
+test("placeholder", () => {
+  assert.ok(analyzeTournamentProgress);
 });
