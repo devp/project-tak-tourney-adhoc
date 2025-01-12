@@ -10,8 +10,8 @@
     "test": "node --experimental-strip-types --test",
     "test:watch": "node --experimental-strip-types --test --watch",
     "start": "node --experimental-strip-types src/cli-driver.ts",
-    "lint": "eslint . --cache",
-    "lint:fix": "eslint . --cache --fix",
+    "lint": "eslint src --cache",
+    "lint:fix": "eslint src --cache --fix",
     "format": "prettier --cache --write \"src/**/*.ts\""
   },
   "type": "module",
