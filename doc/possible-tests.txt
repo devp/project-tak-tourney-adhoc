@@ -5,7 +5,7 @@ Given a tournament configuration:
 - It should require all participants to be unique
 
 Given a list of games from the API:
-- It should filter only games within tournament date range
++ It should filter only games within tournament date range
 - It should only include games between registered tournament participants
 - It should only include games with correct time control (15+10)
 - It should only include games marked as Tournament type

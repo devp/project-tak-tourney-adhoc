@@ -7,6 +7,14 @@ import { GameResultTypes } from "./constants.ts";
 import type { TournamentInfo, TournamentPlayer } from "./types.ts";
 import type { GameResult } from "./playtak-api/types.ts";
 
+// range of tournament
+const today = new Date();
+const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+// used for games in range
+const oneDayAgo = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+// games outside range to ignore
+const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
 let gameResultCounter = 1;
 
 function getGameResultAtIndex(index: number) {
@@ -46,9 +54,10 @@ function makeGroupedPlayers() {
   }));
 }
 
-function makeGameResultsForPlayers(numGames: number, players: Array<TournamentPlayer>) {
+function makeGameResultsForPlayers(numGames: number, players: Array<TournamentPlayer>, date: Date) {
   return Array.from({ length: numGames }, (_, index) =>
     makeGameResult({
+      date: date.getTime(),
       player_white: players[index % 12].username,
       player_black: players[(index + 1) % 12].username,
       result: getGameResultAtIndex(index),
@@ -56,14 +65,18 @@ function makeGameResultsForPlayers(numGames: number, players: Array<TournamentPl
   );
 }
 
-describe("Given tournament with grouped players", () => {
+describe("Given tournament with grouped players, from one week ago til today", () => {
   const players = makeGroupedPlayers();
   const tournamentInfo: TournamentInfo = {
     players,
+    dateRange: {
+      start: oneWeekAgo,
+      end: today,
+    },
   };
-  const games = makeGameResultsForPlayers(10, players);
 
-  describe("analyzeTournamentProgress()", () => {
+  describe("and games for the tournament", () => {
+    const games = makeGameResultsForPlayers(10, players, oneDayAgo);
     const status = analyzeTournamentProgress({ tournamentInfo, games });
 
     it("should return a valid tournament status object", () => {
@@ -80,7 +93,6 @@ describe("Given tournament with grouped players", () => {
 
     it.todo("confirm we are using the correct score scheme");
 
-    it.todo("reads in only records within the date range");
     it("calculates games_played, summing to 20", () => {
       assert(
         status.players.every(
@@ -96,6 +108,26 @@ describe("Given tournament with grouped players", () => {
         totalGamesPlayed,
         20,
         "Total games played should be 20 (10 games * 2 players each)"
+      );
+    });
+  });
+
+  describe("and a combination from within and outside this tournament", () => {
+    const games = [
+      ...makeGameResultsForPlayers(10, players, oneMonthAgo),
+      ...makeGameResultsForPlayers(10, players, oneDayAgo),
+    ];
+    const status = analyzeTournamentProgress({ tournamentInfo, games });
+
+    it("filters for games within tournament date range", () => {
+      const totalGamesPlayed = status.players.reduce(
+        (sum, player) => sum + (player.games_played || 0),
+        0
+      );
+      assert.equal(
+        totalGamesPlayed,
+        20,
+        "Should only count 10 games (20 player-games) from within tournament dates"
       );
     });
   });

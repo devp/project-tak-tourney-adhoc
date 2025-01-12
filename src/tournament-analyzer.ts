@@ -20,6 +20,13 @@ export function analyzeTournamentProgress({
 
   // update scores based on game results
   for (const game of games) {
+    if (
+      game.date < tournamentInfo.dateRange.start.getTime() ||
+      game.date > tournamentInfo.dateRange.end.getTime()
+    ) {
+      continue;
+    }
+
     const whitePlayer = playerMapWithScores[game.player_white];
     const blackPlayer = playerMapWithScores[game.player_black];
     if (!whitePlayer || !blackPlayer) {

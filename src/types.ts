@@ -10,5 +10,9 @@ export type TournamentStatus = {
 };
 
 export type TournamentInfo = {
-  // nothing else yet
+  name?: string;
+  dateRange: {
+    start: Date;
+    end: Date;
+  };
 } & TournamentStatus;
