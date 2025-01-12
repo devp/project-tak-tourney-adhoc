@@ -12,7 +12,10 @@ export function analyzeTournamentProgress({
 }): TournamentStatus {
   // initialize scores to zero
   const playerMapWithScores = Object.fromEntries(
-    tournamentInfo.players.map((player) => [player.username, { ...player, score: 0 }])
+    tournamentInfo.players.map((player) => [
+      player.username,
+      { ...player, score: 0, games_played: 0 },
+    ])
   );
 
   // update scores based on game results
@@ -22,6 +25,7 @@ export function analyzeTournamentProgress({
     if (!whitePlayer || !blackPlayer) {
       throw new Error("Player not found");
     } // TODO: handle this better
+
     // add 2 points to the winner and 1 point for a tie
     if (WINS_FOR_WHITE.includes(game.result)) {
       whitePlayer.score += 2;
@@ -33,6 +37,9 @@ export function analyzeTournamentProgress({
     } else {
       throw new Error(`Unknown game result: ${game.result}`); // TODO: handle this better
     }
+
+    whitePlayer.games_played += 1;
+    blackPlayer.games_played += 1;
   }
 
   const status: TournamentStatus = {

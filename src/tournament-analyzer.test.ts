@@ -70,7 +70,7 @@ describe("Given tournament with grouped players", () => {
       assert(status);
     });
 
-    it("should return players with scores", () => {
+    it("calculates valid scores", () => {
       assert(
         status.players.every(
           (player: TournamentPlayer) => player.score !== undefined && player.score >= 0
@@ -81,5 +81,22 @@ describe("Given tournament with grouped players", () => {
     it.todo("confirm we are using the correct score scheme");
 
     it.todo("reads in only records within the date range");
+    it("calculates games_played, summing to 20", () => {
+      assert(
+        status.players.every(
+          (player) => player.games_played !== undefined && player.games_played >= 0
+        ),
+        "Each player should have games_played count"
+      );
+      const totalGamesPlayed = status.players.reduce(
+        (sum, player) => sum + (player.games_played || 0),
+        0
+      );
+      assert.equal(
+        totalGamesPlayed,
+        20,
+        "Total games played should be 20 (10 games * 2 players each)"
+      );
+    });
   });
 });
