@@ -4,8 +4,8 @@ import assert from "node:assert";
 import { analyzeTournamentProgress } from "./tournament-analyzer.ts";
 import { GameResultTypes } from "./constants.ts";
 
-import type { TournamentInfo, TournamentPlayer } from "./types.ts";
-import type { GameResult } from "./playtak-api/types.ts";
+import type { TournamentInfo, TournamentPlayer, TournamentStatus } from "./types.ts";
+import type { GameResult, GameResultType } from "./playtak-api/types.ts";
 
 // range of tournament
 const today = new Date();
@@ -65,9 +65,43 @@ function makeGameResultsForPlayers(numGames: number, players: Array<TournamentPl
   );
 }
 
+function makeMatchup(
+  player1: string,
+  player2: string,
+  results: GameResultType[],
+  date: Date = oneDayAgo
+): GameResult[] {
+  return [
+    makeGameResult({
+      date: date.getTime(),
+      player_white: player1,
+      player_black: player2,
+      result: results[0],
+    }),
+    makeGameResult({
+      date: date.getTime(),
+      player_white: player2,
+      player_black: player1,
+      result: results[1],
+    }),
+  ];
+}
+
+/** Useful for filling up group play with ties */
+function makeMatchupTies(players: string[], date: Date = oneDayAgo) {
+  const results: GameResult[] = [];
+  for (let i = 0; i < players.length; i++) {
+    for (let j = i + 1; j < players.length; j++) {
+      results.push(...makeMatchup(players[i], players[j], ["1/2-1/2", "1/2-1/2"], date));
+    }
+  }
+  return results;
+}
+
 describe("Given tournament with 12 grouped players (played from last week to today)", () => {
   const players = makeGroupedPlayers(12);
   const tournamentInfo: TournamentInfo = {
+    tournamentType: "groupStage",
     players,
     dateRange: {
       start: oneWeekAgo,
@@ -133,8 +167,9 @@ describe("Given tournament with 12 grouped players (played from last week to tod
 
 describe("[group stage]", () => {
   describe("Given minimal tournament group of two players", () => {
-    const players = makeGroupedPlayers(2);
+    const players = makeGroupedPlayers(2, "Group A");
     const tournamentInfo: TournamentInfo = {
+      tournamentType: "groupStage",
       players,
       dateRange: {
         start: oneWeekAgo,
@@ -162,37 +197,120 @@ describe("[group stage]", () => {
         assert.equal(status.players[1].score, 3);
       });
 
-      it.todo("should determine the winner based on score (despite being a small group)");
+      it("should determine the winner based on score (despite being a small group)", () => {
+        const status = analyzeTournamentProgress({ tournamentInfo, games });
+        assert(status.tournamentType === "groupStage");
+        const group = status.groups[0];
+        assert.equal(!Array.isArray(group?.winner) && group.winner?.username, players[0].username);
+      });
     });
   });
 
   describe("Given tournament with 4 groups of 4 players", () => {
     const players = makeGroupedPlayers(16);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const tournamentInfo: TournamentInfo = {
+      tournamentType: "groupStage",
       players,
       dateRange: {
         start: oneWeekAgo,
         end: today,
       },
     };
+
     describe(`and given different group results
       (group 1: clear winner,
        group 2: head-to-head tiebreaker,
        group 3: Sonneborn-Berger tiebreaker,
        group 4: blitz tiebreaker)`, () => {
-      it.todo("should choose the group 1 winner based on score");
-      it.todo("should choose the group 2 winner based on head-to-head tiebreaker");
-      it.todo("should choose the group 3 winner based on Sonneborn-Berger scores");
-      it.todo("should choose the group 4 winner based on blitz tiebreaker");
+      function getGroup(status: TournamentStatus, groupName: string) {
+        if (status.tournamentType === "groupStage") {
+          return status.groups.find((g) => g.name === groupName);
+        } else {
+          assert.fail("Tournament type is not groupStage");
+        }
+      }
+
+      // Group 1: Clear winner with highest score
+      const group1Games = [
+        ...makeMatchup("player1", "player2", ["R-0", "0-F"]),
+        ...makeMatchup("player1", "player3", ["F-0", "0-R"]),
+        ...makeMatchup("player1", "player4", ["1-0", "0-1"]),
+        ...makeMatchupTies(["player2", "player3", "player4"]),
+      ];
+      // Group 2: Two players tied on points, but head-to-head determines winner
+      const group2Games = [
+        // player 5 beats player 6
+        ...makeMatchup("player5", "player6", ["R-0", "0-1"]),
+        // player 5 and 6 beat player 7
+        ...makeMatchup("player5", "player7", ["1-0", "R-0"]),
+        ...makeMatchup("player6", "player7", ["1-0", "0-1"]),
+        // the rest is ties
+        ...makeMatchup("player5", "player8", ["1/2-1/2", "1/2-1/2"]),
+        ...makeMatchup("player6", "player8", ["1/2-1/2", "1/2-1/2"]),
+        ...makeMatchup("player7", "player8", ["1/2-1/2", "1/2-1/2"]),
+      ];
+
+      // Group 3: Multiple players tied, even on head-to-head
+      const group3Games = [
+        ...makeMatchup("player9", "player10", ["1-0", "1-0"]),
+        ...makeMatchup("player10", "player11", ["1-0", "1-0"]),
+        ...makeMatchup("player11", "player9", ["1-0", "1-0"]),
+        // Everyone beats player 12
+        // TODO: change this to ensure player10 wins Sonneborn-Berger
+        // The actual scores of all opponents a player has defeated
+        // Half the scores of all opponents a player has drawn against
+        ...makeMatchup("player9", "player12", ["1-0", "1-0"]),
+        ...makeMatchup("player10", "player12", ["1-0", "1-0"]),
+        ...makeMatchup("player11", "player12", ["1-0", "1-0"]),
+      ];
+
+      // Group 4: Complete tie, with deciding blitz games
+      const group4Games = [
+        ...makeMatchupTies(["player13", "player14", "player15", "player16"]),
+        // TODO: add blitz games, with player15 as the winner
+      ];
+
+      const games = [...group1Games, ...group2Games, ...group3Games, ...group4Games];
+
+      it("should choose the group 1 winner based on score", () => {
+        const status = analyzeTournamentProgress({ tournamentInfo, games });
+        const group = getGroup(status, "Group 1");
+        assert(group?.winner && !Array.isArray(group.winner));
+        assert.equal(group.winner.username, "player1");
+        assert(group.winner_method === "score");
+      });
+
+      it("should choose the group 2 winner based on head-to-head tiebreaker", () => {
+        const status = analyzeTournamentProgress({ tournamentInfo, games });
+        const group = getGroup(status, "Group 2");
+        assert(group?.winner && !Array.isArray(group.winner));
+        assert.equal(group.winner.username, "player5");
+        assert(group.winner_method === "head-to-head");
+      });
+
+      it.skip("should choose the group 3 winner based on Sonneborn-Berger scores", () => {
+        const status = analyzeTournamentProgress({ tournamentInfo, games });
+        const group = getGroup(status, "Group 3");
+        assert(group?.winner && !Array.isArray(group.winner));
+        assert.equal(group.winner.username, "player10"); // TODO: change this to ensure player10 wins
+        assert(group.winner_method === "sonneborn-berger");
+      });
+
+      it.skip("should choose the group 4 winner based on blitz tiebreaker", () => {
+        const status = analyzeTournamentProgress({ tournamentInfo, games });
+        const group = getGroup(status, "Group 4");
+        assert(group?.winner && !Array.isArray(group.winner));
+        assert.equal(group.winner.username, "player15"); // TODO: change this to ensure player15 wins
+        assert(group.winner_method === "blitz");
+      });
     });
   });
 
   describe("Given tournament with 4 players in a group", () => {
     const groupName = "Group A";
     const players = makeGroupedPlayers(4, groupName);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const tournamentInfo: TournamentInfo = {
+      tournamentType: "groupStage",
       players,
       dateRange: {
         start: oneWeekAgo,
@@ -200,8 +318,59 @@ describe("[group stage]", () => {
       },
     };
 
-    describe("and incomplete matchups", () => {
-      it.todo("should not choose a winner");
+    it("should return multiple winners in a true tie", () => {
+      // player 1 and player 2 beat everyone else. player 3 beats player 4.
+      const games = [
+        ...makeMatchup("player1", "player2", ["1/2-1/2", "1/2-1/2"]),
+        ...makeMatchup("player1", "player3", ["R-0", "0-F"]),
+        ...makeMatchup("player1", "player4", ["R-0", "0-F"]),
+        ...makeMatchup("player2", "player3", ["R-0", "0-F"]),
+        ...makeMatchup("player2", "player4", ["R-0", "0-F"]),
+        ...makeMatchup("player3", "player4", ["R-0", "0-F"]),
+      ];
+      const status = analyzeTournamentProgress({ tournamentInfo, games });
+      assert(status.tournamentType === "groupStage");
+      assert(Array.isArray(status.groups[0].winner));
+      assert.equal(status.groups[0].winner.length, 2);
+      assert(status.groups[0].winner.some(({ username }) => username === "player1"));
+      assert(status.groups[0].winner.some(({ username }) => username === "player2"));
+    });
+
+    it("should not choose a winner until all games are played", () => {
+      // Only 2 complete matchups (4 games) out of required 6 matchups (12 games)
+      const incompleteGames = [
+        // player1 vs player2 matchup (complete)
+        makeGameResult({
+          date: oneDayAgo.getTime(),
+          player_white: "player1",
+          player_black: "player2",
+          result: "1-0",
+        }),
+        makeGameResult({
+          date: oneDayAgo.getTime(),
+          player_white: "player2",
+          player_black: "player1",
+          result: "0-1",
+        }),
+        // player3 vs player4 matchup (complete)
+        makeGameResult({
+          date: oneDayAgo.getTime(),
+          player_white: "player3",
+          player_black: "player4",
+          result: "1-0",
+        }),
+        makeGameResult({
+          date: oneDayAgo.getTime(),
+          player_white: "player4",
+          player_black: "player3",
+          result: "1-0",
+        }),
+      ];
+
+      const status = analyzeTournamentProgress({ tournamentInfo, games: incompleteGames });
+      assert(status.tournamentType === "groupStage");
+      assert.equal(status.groups.length, 1);
+      assert(status.groups[0].winner === null);
     });
   });
 });
