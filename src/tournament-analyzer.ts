@@ -1,15 +1,14 @@
 import { TIES, WINS_FOR_BLACK, WINS_FOR_WHITE } from "./constants.ts";
 import type { GameResult } from "./playtak-api/types";
-import type { TournamentInfo, TournamentStatus } from "./types";
+import type { GroupTournamentStatus, TournamentInfo, TournamentStatus } from "./types";
 
-export function analyzeTournamentProgress({
+function analyzeGroupTournamentProgress({
   tournamentInfo,
-
   games,
 }: {
   tournamentInfo: TournamentInfo;
   games: GameResult[];
-}): TournamentStatus {
+}): GroupTournamentStatus {
   // initialize scores to zero
   const playerMapWithScores = Object.fromEntries(
     tournamentInfo.players.map((player) => [
@@ -49,8 +48,23 @@ export function analyzeTournamentProgress({
     blackPlayer.games_played += 1;
   }
 
-  const status: TournamentStatus = {
+  const status: GroupTournamentStatus = {
+    tournamentType: "groupStage",
+    groups: [],
     players: Object.values(playerMapWithScores),
   };
   return status;
+}
+
+export function analyzeTournamentProgress({
+  tournamentInfo,
+  games,
+}: {
+  tournamentInfo: TournamentInfo;
+  games: GameResult[];
+}): TournamentStatus {
+  if (tournamentInfo.tournamentType === "groupStage") {
+    return analyzeGroupTournamentProgress({ tournamentInfo, games });
+  }
+  throw new Error("Unsupported tournament type");
 }
