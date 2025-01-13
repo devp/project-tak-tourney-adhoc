@@ -1,6 +1,14 @@
 import { TIES, WINS_FOR_BLACK, WINS_FOR_WHITE } from "./constants.ts";
 import type { GameResult } from "./playtak-api/types";
-import type { GroupTournamentStatus, TournamentInfo, TournamentStatus } from "./types";
+import type {
+  GroupTournamentStatus,
+  TournamentGroup,
+  TournamentInfo,
+  TournamentStatus,
+} from "./types";
+import { groupBy } from "./utils.ts";
+
+const UNGROUPED = "UNGROUPED";
 
 function analyzeGroupTournamentProgress({
   tournamentInfo,
@@ -48,10 +56,22 @@ function analyzeGroupTournamentProgress({
     blackPlayer.games_played += 1;
   }
 
+  const groupedPlayers = groupBy(Object.values(playerMapWithScores), (p) => p.group ?? UNGROUPED);
+
+  const groups: TournamentGroup[] = Object.entries(groupedPlayers).map(([groupName, players]) => {
+    const sortedPlayers = players.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+    return {
+      name: groupName,
+      players: sortedPlayers,
+      winner: sortedPlayers[0],
+      winner_method: "score",
+    };
+  });
+
   const status: GroupTournamentStatus = {
     tournamentType: "groupStage",
-    groups: [],
     players: Object.values(playerMapWithScores),
+    groups,
   };
   return status;
 }
