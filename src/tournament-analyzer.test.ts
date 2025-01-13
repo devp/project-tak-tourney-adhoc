@@ -47,8 +47,8 @@ function makeGameResult(overrides: Partial<GameResult> = {}): GameResult {
   };
 }
 
-function makeGroupedPlayers() {
-  return Array.from({ length: 12 }, (_, index) => ({
+function makeGroupedPlayers(numPlayers: number) {
+  return Array.from({ length: numPlayers }, (_, index) => ({
     username: `player${index + 1}`,
     group: `Group ${(index % 3) + 1}`,
   }));
@@ -65,8 +65,8 @@ function makeGameResultsForPlayers(numGames: number, players: Array<TournamentPl
   );
 }
 
-describe("Given tournament with grouped players, from one week ago til today", () => {
-  const players = makeGroupedPlayers();
+describe("Given tournament with 12 grouped players (played from last week to today)", () => {
+  const players = makeGroupedPlayers(12);
   const tournamentInfo: TournamentInfo = {
     players,
     dateRange: {
@@ -75,7 +75,7 @@ describe("Given tournament with grouped players, from one week ago til today", (
     },
   };
 
-  describe("and games for the tournament", () => {
+  describe("and 10 played games for the tournament", () => {
     const games = makeGameResultsForPlayers(10, players, oneDayAgo);
     const status = analyzeTournamentProgress({ tournamentInfo, games });
 
@@ -90,8 +90,6 @@ describe("Given tournament with grouped players, from one week ago til today", (
         )
       );
     });
-
-    it.todo("confirm we are using the correct score scheme");
 
     it("calculates games_played, summing to 20", () => {
       assert(
@@ -129,6 +127,40 @@ describe("Given tournament with grouped players, from one week ago til today", (
         20,
         "Should only count 10 games (20 player-games) from within tournament dates"
       );
+    });
+  });
+});
+
+describe("[group stage]", () => {
+  describe("Given minimal tournament of two players", () => {
+    const players = makeGroupedPlayers(2);
+    const tournamentInfo: TournamentInfo = {
+      players,
+      dateRange: {
+        start: oneWeekAgo,
+        end: today,
+      },
+    };
+    describe("and results of 1 W 1 T", () => {
+      const games = [
+        makeGameResult({
+          date: oneDayAgo.getTime(),
+          player_white: players[0].username,
+          player_black: players[1].username,
+          result: "0-R",
+        }),
+        makeGameResult({
+          date: oneDayAgo.getTime(),
+          player_white: players[1].username,
+          player_black: players[0].username,
+          result: "1/2-1/2",
+        }),
+      ];
+      it("calculates correct points (2 for win, 1 for draw)", () => {
+        const status = analyzeTournamentProgress({ tournamentInfo, games });
+        assert.equal(status.players[0].score, 1);
+        assert.equal(status.players[1].score, 3);
+      });
     });
   });
 });

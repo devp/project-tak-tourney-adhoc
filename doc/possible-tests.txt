@@ -14,7 +14,7 @@ Given a list of games from the API:
 - It should identify incomplete match pairs
 
 Given a group stage tournament:
-- It should calculate correct points (2 for win, 1 for draw)
++ It should calculate correct points (2 for win, 1 for draw)
 - It should track games played per week for each player
 - It should identify players not meeting the 2 matches per week requirement
 - It should correctly apply head-to-head tiebreaker
