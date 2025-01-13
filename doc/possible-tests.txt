@@ -17,11 +17,11 @@ Given a group stage tournament:
 + It should calculate correct points (2 for win, 1 for draw)
 - It should track games played per week for each player
 - It should identify players not meeting the 2 matches per week requirement
-- It should correctly apply head-to-head tiebreaker
-- It should correctly calculate Sonneborn-Berger scores for ties
-- It should identify when blitz tiebreakers are needed
-- It should determine group winners based on all tiebreaker rules
-- It should handle multiple groups if configured
++ It should correctly apply head-to-head tiebreaker
++ It should correctly calculate Sonneborn-Berger scores for ties
++ It should identify when blitz tiebreakers are needed
++ It should determine group winners based on all tiebreaker rules
++ It should handle multiple groups if configured
 
 Given a knockout stage tournament:
 - It should generate correct bracket from group winners

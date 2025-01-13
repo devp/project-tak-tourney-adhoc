@@ -47,10 +47,10 @@ function makeGameResult(overrides: Partial<GameResult> = {}): GameResult {
   };
 }
 
-function makeGroupedPlayers(numPlayers: number) {
+function makeGroupedPlayers(numPlayers: number, groupName?: string) {
   return Array.from({ length: numPlayers }, (_, index) => ({
     username: `player${index + 1}`,
-    group: `Group ${(index % 3) + 1}`,
+    group: groupName ?? `Group ${(index % 4) + 1}`,
   }));
 }
 
@@ -132,7 +132,7 @@ describe("Given tournament with 12 grouped players (played from last week to tod
 });
 
 describe("[group stage]", () => {
-  describe("Given minimal tournament of two players", () => {
+  describe("Given minimal tournament group of two players", () => {
     const players = makeGroupedPlayers(2);
     const tournamentInfo: TournamentInfo = {
       players,
@@ -161,6 +161,47 @@ describe("[group stage]", () => {
         assert.equal(status.players[0].score, 1);
         assert.equal(status.players[1].score, 3);
       });
+
+      it.todo("should determine the winner based on score (despite being a small group)");
+    });
+  });
+
+  describe("Given tournament with 4 groups of 4 players", () => {
+    const players = makeGroupedPlayers(16);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const tournamentInfo: TournamentInfo = {
+      players,
+      dateRange: {
+        start: oneWeekAgo,
+        end: today,
+      },
+    };
+    describe(`and given different group results
+      (group 1: clear winner,
+       group 2: head-to-head tiebreaker,
+       group 3: Sonneborn-Berger tiebreaker,
+       group 4: blitz tiebreaker)`, () => {
+      it.todo("should choose the group 1 winner based on score");
+      it.todo("should choose the group 2 winner based on head-to-head tiebreaker");
+      it.todo("should choose the group 3 winner based on Sonneborn-Berger scores");
+      it.todo("should choose the group 4 winner based on blitz tiebreaker");
+    });
+  });
+
+  describe("Given tournament with 4 players in a group", () => {
+    const groupName = "Group A";
+    const players = makeGroupedPlayers(4, groupName);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const tournamentInfo: TournamentInfo = {
+      players,
+      dateRange: {
+        start: oneWeekAgo,
+        end: today,
+      },
+    };
+
+    describe("and incomplete matchups", () => {
+      it.todo("should not choose a winner");
     });
   });
 });
