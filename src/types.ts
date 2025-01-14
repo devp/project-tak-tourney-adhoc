@@ -7,11 +7,22 @@ export type TournamentPlayer = {
   games_played?: number;
 };
 
+/**
+ * Note: "all-methods-exhausted" is used when all methods have been exhausted and no winner has been found.
+ * In that case, expect multiple winners to be returned.
+ */
+export type WinnerMethod =
+  | "score"
+  | "head-to-head"
+  | "sonneborn-berger"
+  | "blitz"
+  | "all-methods-exhausted";
+
 export type TournamentGroup = {
   name: string;
   /** one player, multiple tied players, or null if no winner yet */
   winner: TournamentPlayer | TournamentPlayer[] | null;
-  winner_method: "score" | "head-to-head" | "sonneborn-berger" | "blitz" | null;
+  winner_method: WinnerMethod | null;
 };
 
 export type TournamentStatusBase = {
