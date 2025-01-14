@@ -23,7 +23,7 @@ export type GameResult = {
   extra_time_trigger: number;
 };
 
-export type ListResponse = {
+export type GameListResponse = {
   items: GameResult[];
   total: number;
   page: number;
