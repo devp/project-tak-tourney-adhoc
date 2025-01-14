@@ -92,6 +92,14 @@ function outputTournamentStatus(status: TournamentStatus, tournamentInfo: Tourna
       } else {
         winnerText = "None";
       }
+      console.log("  Standings:");
+      for (const player of status.players) {
+        if (player.group === group.name) {
+          console.log(
+            `    ${player.username}: ${player.score} points (${player.games_played} games)`
+          );
+        }
+      }
       console.log(`  Winner: ${winnerText}`);
     }
   }
