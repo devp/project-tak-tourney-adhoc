@@ -6,6 +6,8 @@ The goal of this prototype is to generate code that could be used in other backe
 
 ```
 > npm run start -- --tournament doc/example-tournament-group-stage.json --gamesApiResponse doc/example-api-response-pretty.json
+
+> npm run start -- --tournament doc/example-tournament-group-stage.json --gamesApiUrl 'https://api.playtak.com/v1/games-history?page=0&limit=100&type=Tournament&mirror=true'
 ```
 ## Development
 
