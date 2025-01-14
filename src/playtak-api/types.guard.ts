@@ -2,7 +2,7 @@
  * Generated type guards for "types.ts".
  * WARNING: Do not manually change this file.
  */
-import { GameResultType, GameResult, GameListResponse } from "./types";
+import type { GameResultType, GameResult, GameListResponse } from "./types.ts";
 
 export function isGameResultType(obj: unknown): obj is GameResultType {
     const typedObj = obj as GameResultType
