@@ -20,8 +20,10 @@ export function isTournamentPlayer(obj: unknown): obj is TournamentPlayer {
             typeof typedObj === "function") &&
         typeof typedObj["username"] === "string" &&
         typeof typedObj["group"] === "string" &&
-        typeof typedObj["score"] === "number" &&
-        typeof typedObj["games_played"] === "number"
+        (typeof typedObj["score"] === "undefined" ||
+            typeof typedObj["score"] === "number") &&
+        (typeof typedObj["games_played"] === "undefined" ||
+            typeof typedObj["games_played"] === "number")
     )
 }
 
@@ -43,12 +45,18 @@ export function isTournamentGroup(obj: unknown): obj is TournamentGroup {
             typeof typedObj === "object" ||
             typeof typedObj === "function") &&
         typeof typedObj["name"] === "string" &&
-        (isTournamentPlayer(typedObj["winner"]) as boolean ||
+        (typedObj["winner"] === null ||
+            isTournamentPlayer(typedObj["winner"]) as boolean ||
             Array.isArray(typedObj["winner"]) &&
             typedObj["winner"].every((e: any) =>
                 isTournamentPlayer(e) as boolean
             )) &&
-        isWinnerMethod(typedObj["winner_method"]) as boolean
+        (typedObj["winner_method"] === null ||
+            typedObj["winner_method"] === "score" ||
+            typedObj["winner_method"] === "head-to-head" ||
+            typedObj["winner_method"] === "sonneborn-berger" ||
+            typedObj["winner_method"] === "blitz" ||
+            typedObj["winner_method"] === "all-methods-exhausted")
     )
 }
 
@@ -105,7 +113,8 @@ export function isTournamentInfo(obj: unknown): obj is TournamentInfo {
         (typedObj !== null &&
             typeof typedObj === "object" ||
             typeof typedObj === "function") &&
-        typeof typedObj["name"] === "string" &&
+        (typeof typedObj["name"] === "undefined" ||
+            typeof typedObj["name"] === "string") &&
         isTournamentType(typedObj["tournamentType"]) as boolean &&
         (typedObj["dateRange"] !== null &&
             typeof typedObj["dateRange"] === "object" ||
@@ -116,7 +125,9 @@ export function isTournamentInfo(obj: unknown): obj is TournamentInfo {
         typedObj["players"].every((e: any) =>
             isTournamentPlayer(e) as boolean
         ) &&
-        isTournamentStatus(typedObj["status"]) as boolean
+        (typeof typedObj["status"] === "undefined" ||
+            isGroupTournamentStatus(typedObj["status"]) as boolean ||
+            isKnockoutTournamentStatus(typedObj["status"]) as boolean)
     )
 }
 
@@ -126,13 +137,16 @@ export function isTournamentInfoFromJson(obj: unknown): obj is TournamentInfoFro
         (typedObj !== null &&
             typeof typedObj === "object" ||
             typeof typedObj === "function") &&
-        typeof typedObj["name"] === "string" &&
+        (typeof typedObj["name"] === "undefined" ||
+            typeof typedObj["name"] === "string") &&
         isTournamentType(typedObj["tournamentType"]) as boolean &&
         Array.isArray(typedObj["players"]) &&
         typedObj["players"].every((e: any) =>
             isTournamentPlayer(e) as boolean
         ) &&
-        isTournamentStatus(typedObj["status"]) as boolean &&
+        (typeof typedObj["status"] === "undefined" ||
+            isGroupTournamentStatus(typedObj["status"]) as boolean ||
+            isKnockoutTournamentStatus(typedObj["status"]) as boolean) &&
         (typedObj !== null &&
             typeof typedObj === "object" ||
             typeof typedObj === "function") &&
