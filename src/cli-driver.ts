@@ -53,6 +53,7 @@ async function main() {
   const args = process.argv.slice(2);
   let tournamentInfo: TournamentInfo | undefined;
   let games: GameResult[] | undefined;
+  let outputFormat: "text" | "json" = "text";
 
   for (let i = 0; i < args.length; i += 2) {
     const flag = args[i];
@@ -71,6 +72,9 @@ async function main() {
         break;
       case "--gamesApiUrl":
         games = await fetchGamesFromUrl(value);
+        break;
+      case "--outputFormat":
+        outputFormat = value as "text" | "json";
         break;
       default:
         throw new Error(`Unknown argument: ${flag}`);
@@ -91,6 +95,11 @@ async function main() {
   });
 
   const playerNames = status.players.map(({ username }) => username);
+
+  if (outputFormat === "json") {
+    console.log(JSON.stringify(status, null, 2));
+    return;
+  }
 
   console.log(`Tournament: ${tournamentInfo.name}`);
   console.log(`Players: ${playerNames.join(", ")}`);
