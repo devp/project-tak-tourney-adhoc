@@ -11,19 +11,20 @@ import { groupBy } from "./utils.ts";
 
 const UNGROUPED = "UNGROUPED";
 
-// TODO: revise this generated impl
 function getHeadToHeadWinner(
+  info: TournamentInfo,
   tiedPlayers: TournamentPlayer[],
   games: GameResult[]
 ): TournamentPlayer | null {
-  const headToHeadScores = new Map<string, number>();
-
-  // Initialize scores for tied players
-  tiedPlayers.forEach((player) => headToHeadScores.set(player.username, 0));
+  const headToHeadScores = new Map<string, number>(
+    tiedPlayers.map((player) => [player.username, 0])
+  );
 
   // Calculate head-to-head scores among tied players
   for (const game of games) {
-    // FIXME: should only consider games within the date range
+    if (game.date < info.dateRange.start.getTime() || game.date > info.dateRange.end.getTime()) {
+      continue;
+    }
 
     // Only consider games between tied players
     if (!headToHeadScores.has(game.player_white) || !headToHeadScores.has(game.player_black)) {
@@ -40,23 +41,13 @@ function getHeadToHeadWinner(
     }
   }
 
-  // Find player with highest head-to-head score
-  let maxScore = -1;
-  let winner: TournamentPlayer | null = null;
-  let isTied = false;
-
-  for (const player of tiedPlayers) {
-    const score = headToHeadScores.get(player.username) || 0;
-    if (score > maxScore) {
-      maxScore = score;
-      winner = player;
-      isTied = false;
-    } else if (score === maxScore) {
-      isTied = true;
-    }
-  }
-
-  return isTied ? null : winner;
+  // Find players with highest head-to-head scores
+  const maxScore = Math.max(...Array.from(headToHeadScores.values()));
+  const winners = tiedPlayers.filter(
+    (player) => headToHeadScores.get(player.username) === maxScore
+  );
+  // If there is a single winner, return them as the head-to-head winner
+  return winners.length === 1 ? winners[0] : null;
 }
 
 function analyzeGroupTournamentProgress({
@@ -87,7 +78,7 @@ function analyzeGroupTournamentProgress({
     const blackPlayer = playerMapWithScores[game.player_black];
     if (!whitePlayer || !blackPlayer) {
       throw new Error("Player not found");
-    } // TODO: handle this better
+    }
 
     // Extra initialization check to satisfy type check.
     if (whitePlayer.score === undefined) {
@@ -112,7 +103,7 @@ function analyzeGroupTournamentProgress({
       whitePlayer.score += 1;
       blackPlayer.score += 1;
     } else {
-      throw new Error(`Unknown game result: ${game.result}`); // TODO: handle this better
+      throw new Error(`Unknown game result: ${game.result}`);
     }
 
     whitePlayer.games_played += 1;
@@ -138,7 +129,7 @@ function analyzeGroupTournamentProgress({
     }
 
     // Try head-to-head tiebreaker
-    const headToHeadWinner = getHeadToHeadWinner(tiedPlayers, games);
+    const headToHeadWinner = getHeadToHeadWinner(tournamentInfo, tiedPlayers, games);
     if (headToHeadWinner) {
       return {
         name: groupName,
