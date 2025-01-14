@@ -1,0 +1,22 @@
+{
+  "name": "example-tournament-group-stage",
+  "tournamentType": "groupStage",
+  "dateRange": {
+    "start": "2025-01-01",
+    "end": "2025-01-31"
+  },
+  "players": [
+    {
+      "username": "alion02",
+      "group": "A"
+    },
+    {
+      "username": "phase_spaced",
+      "group": "A"
+    },
+    {
+      "username": "MediocreTaborlin",
+      "group": "A"
+    }
+  ]
+}
