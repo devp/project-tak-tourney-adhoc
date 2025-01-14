@@ -1,0 +1,55 @@
+{
+  "tournamentType": "groupStage",
+  "players": [
+    {
+      "username": "alion02",
+      "group": "A",
+      "score": 4,
+      "games_played": 2
+    },
+    {
+      "username": "phase_spaced",
+      "group": "A",
+      "score": 0,
+      "games_played": 1
+    },
+    {
+      "username": "MediocreTaborlin",
+      "group": "A",
+      "score": 0,
+      "games_played": 1
+    }
+  ],
+  "groups": [
+    {
+      "name": "A",
+      "players": [
+        {
+          "username": "alion02",
+          "group": "A",
+          "score": 4,
+          "games_played": 2
+        },
+        {
+          "username": "phase_spaced",
+          "group": "A",
+          "score": 0,
+          "games_played": 1
+        },
+        {
+          "username": "MediocreTaborlin",
+          "group": "A",
+          "score": 0,
+          "games_played": 1
+        }
+      ],
+      "winner": {
+        "username": "alion02",
+        "group": "A",
+        "score": 4,
+        "games_played": 2
+      },
+      "winner_method": "score"
+    }
+  ]
+}
