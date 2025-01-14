@@ -13,6 +13,8 @@
     "lint": "eslint src --cache",
     "lint:fix": "eslint src --cache --fix",
     "format": "prettier --cache --write \"src/**/*.ts\"",
+    "ts:check": "tsc --noEmit",
+    "dev:all_checks": "npm run ts:check && npm run lint:fix && npm run format",
     "dev:recreate_auto_guard": "npx ts-auto-guard --project ./misc/ts-auto-guard.tsconfig.json --paths ./src/playtak-api/types.ts --paths ./src/types.ts --export-all"
   },
   "type": "module",
