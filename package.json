@@ -12,7 +12,8 @@
     "start": "node --experimental-strip-types src/cli-driver.ts",
     "lint": "eslint src --cache",
     "lint:fix": "eslint src --cache --fix",
-    "format": "prettier --cache --write \"src/**/*.ts\""
+    "format": "prettier --cache --write \"src/**/*.ts\"",
+    "dev:recreate_auto_guard": "npx ts-auto-guard --project ./misc/ts-auto-guard.tsconfig.json --paths ./src/playtak-api/types.ts --paths ./src/types.ts --export-all"
   },
   "type": "module",
   "keywords": [],

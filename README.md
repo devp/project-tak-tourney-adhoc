@@ -9,3 +9,9 @@ The goal of this prototype is to generate code that could be used in other backe
 3. Run `npm install`
 4. Run `npm test` to run the tests, or `npm test:watch` during development iterations.
 5. Run `npm run lint:fix && npm run format` on code changes before committing.
+
+## Implementation Details
+
+### ts-auto-guard
+
+When types are changed, rerun `npm run dev:recreate_auto_guard` to update the guard files.
