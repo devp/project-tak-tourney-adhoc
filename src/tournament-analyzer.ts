@@ -77,7 +77,8 @@ function analyzeGroupTournamentProgress({
     const whitePlayer = playerMapWithScores[game.player_white];
     const blackPlayer = playerMapWithScores[game.player_black];
     if (!whitePlayer || !blackPlayer) {
-      throw new Error("Player not found");
+      // TODO: log a warning, but for now, ignore these games;
+      continue;
     }
 
     // Extra initialization check to satisfy type check.
