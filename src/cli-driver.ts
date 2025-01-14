@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { isGameListResponse } from "./playtak-api/types.guard.ts";
 import { isTournamentInfoFromJson } from "./types.guard.ts";
 import type { GameResult } from "./playtak-api/types.ts";
-import type { TournamentInfo, TournamentPlayer } from "./types.ts";
+import type { TournamentInfo, TournamentPlayer, TournamentStatus } from "./types.ts";
 
 // TODO: deal with pagination
 
@@ -74,6 +74,29 @@ async function readPlayersFromCsv(filename: string): Promise<TournamentPlayer[]>
   return result;
 }
 
+function outputTournamentStatus(status: TournamentStatus, tournamentInfo: TournamentInfo) {
+  const playerNames = status.players.map(({ username }) => username);
+  console.log(`Tournament: ${tournamentInfo.name}`);
+  console.log(`Players: ${playerNames.join(", ")}`);
+  if (status.tournamentType === "groupStage") {
+    console.log(`Type: Group Stage (${status.groups.length} groups)`);
+    for (const group of status.groups) {
+      console.log(`- Group: ${group.name}`);
+      let winnerText: string;
+      if (group.winner) {
+        if (Array.isArray(group.winner)) {
+          winnerText = "Tie between " + group.winner.map(({ username }) => username).join(", ");
+        } else {
+          winnerText = `${group.winner.username} (via ${group.winner_method})`;
+        }
+      } else {
+        winnerText = "None";
+      }
+      console.log(`  Winner: ${winnerText}`);
+    }
+  }
+}
+
 async function main() {
   const args = process.argv.slice(2);
   let tournamentInfo: TournamentInfo | undefined;
@@ -132,26 +155,7 @@ async function main() {
     return;
   }
 
-  const playerNames = status.players.map(({ username }) => username);
-  console.log(`Tournament: ${tournamentInfo.name}`);
-  console.log(`Players: ${playerNames.join(", ")}`);
-  if (status.tournamentType === "groupStage") {
-    console.log(`Type: Group Stage (${status.groups.length} groups)`);
-    for (const group of status.groups) {
-      console.log(`- Group: ${group.name}`);
-      let winnerText: string;
-      if (group.winner) {
-        if (Array.isArray(group.winner)) {
-          winnerText = "Tie between " + group.winner.map(({ username }) => username).join(", ");
-        } else {
-          winnerText = `${group.winner.username} (via ${group.winner_method})`;
-        }
-      } else {
-        winnerText = "None";
-      }
-      console.log(`  Winner: ${winnerText}`);
-    }
-  }
+  outputTournamentStatus(status, tournamentInfo);
 }
 
 main().catch((error) => {
