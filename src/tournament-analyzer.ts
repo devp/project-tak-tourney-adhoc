@@ -1,12 +1,12 @@
 import { TIES, WINS_FOR_BLACK, WINS_FOR_WHITE } from "./constants.ts";
-import type { GameResult } from "./playtak-api/types";
+import type { GameResult } from "./playtak-api/types.ts";
 import type {
   GroupTournamentStatus,
   TournamentGroup,
   TournamentInfo,
   TournamentPlayer,
   TournamentStatus,
-} from "./types";
+} from "./types.ts";
 import { groupBy } from "./utils.ts";
 
 const UNGROUPED = "UNGROUPED";
