@@ -52,3 +52,10 @@ export type TournamentInfo = {
   players: Array<TournamentPlayer>;
   status?: TournamentStatus;
 };
+
+export type TournamentInfoFromJson = Omit<TournamentInfo, "dateRange"> & {
+  dateRange: {
+    start: string;
+    end: string;
+  };
+};

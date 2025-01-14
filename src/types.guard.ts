@@ -2,7 +2,7 @@
  * Generated type guards for "types.ts".
  * WARNING: Do not manually change this file.
  */
-import type { TournamentType, TournamentPlayer, WinnerMethod, TournamentGroup, TournamentStatusBase, GroupTournamentStatus, KnockoutTournamentStatus, TournamentStatus, TournamentInfo } from "./types.ts";
+import type { TournamentType, TournamentPlayer, WinnerMethod, TournamentGroup, TournamentStatusBase, GroupTournamentStatus, KnockoutTournamentStatus, TournamentStatus, TournamentInfo, TournamentInfoFromJson } from "./types.ts";
 
 export function isTournamentType(obj: unknown): obj is TournamentType {
     const typedObj = obj as TournamentType
@@ -117,5 +117,29 @@ export function isTournamentInfo(obj: unknown): obj is TournamentInfo {
             isTournamentPlayer(e) as boolean
         ) &&
         isTournamentStatus(typedObj["status"]) as boolean
+    )
+}
+
+export function isTournamentInfoFromJson(obj: unknown): obj is TournamentInfoFromJson {
+    const typedObj = obj as TournamentInfoFromJson
+    return (
+        (typedObj !== null &&
+            typeof typedObj === "object" ||
+            typeof typedObj === "function") &&
+        typeof typedObj["name"] === "string" &&
+        isTournamentType(typedObj["tournamentType"]) as boolean &&
+        Array.isArray(typedObj["players"]) &&
+        typedObj["players"].every((e: any) =>
+            isTournamentPlayer(e) as boolean
+        ) &&
+        isTournamentStatus(typedObj["status"]) as boolean &&
+        (typedObj !== null &&
+            typeof typedObj === "object" ||
+            typeof typedObj === "function") &&
+        (typedObj["dateRange"] !== null &&
+            typeof typedObj["dateRange"] === "object" ||
+            typeof typedObj["dateRange"] === "function") &&
+        typeof typedObj["dateRange"]["start"] === "string" &&
+        typeof typedObj["dateRange"]["end"] === "string"
     )
 }
