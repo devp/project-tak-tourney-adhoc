@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { isGameListResponse } from "./playtak-api/types.guard.ts";
 import { isTournamentInfoFromJson } from "./types.guard.ts";
 import type { GameResult } from "./playtak-api/types.ts";
-import type { TournamentInfo } from "./types.ts";
+import type { TournamentInfo, TournamentPlayer } from "./types.ts";
 
 // TODO: deal with pagination
 
@@ -49,11 +49,37 @@ async function getGameResultsFromJsonFile(filename: string): Promise<GameResult[
   }
 }
 
+async function readPlayersFromCsv(filename: string): Promise<TournamentPlayer[]> {
+  const csvContent = await readFile(filename, "utf-8");
+  const lines = csvContent
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const headers = lines[0].split(",").map((h) => h.trim());
+  const usernameIndex = headers.indexOf("username");
+  const groupIndex = headers.indexOf("groupname");
+
+  if (usernameIndex === -1 || groupIndex === -1) {
+    throw new Error("CSV must have username and groupname columns");
+  }
+
+  const result = lines.slice(1).map((line) => {
+    const values = line.split(",").map((v) => v.trim());
+    return {
+      username: values[usernameIndex],
+      group: values[groupIndex],
+    };
+  });
+
+  return result;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   let tournamentInfo: TournamentInfo | undefined;
   let games: GameResult[] | undefined;
   let outputFormat: "text" | "json" = "text";
+  let playersFromCsv: TournamentPlayer[] | undefined;
 
   for (let i = 0; i < args.length; i += 2) {
     const flag = args[i];
@@ -76,9 +102,16 @@ async function main() {
       case "--outputFormat":
         outputFormat = value as "text" | "json";
         break;
+      case "--playersCsv":
+        playersFromCsv = await readPlayersFromCsv(value);
+        break;
       default:
         throw new Error(`Unknown argument: ${flag}`);
     }
+  }
+
+  if (tournamentInfo && playersFromCsv) {
+    tournamentInfo.players = playersFromCsv;
   }
 
   if (!tournamentInfo) {
@@ -94,13 +127,12 @@ async function main() {
     games,
   });
 
-  const playerNames = status.players.map(({ username }) => username);
-
   if (outputFormat === "json") {
     console.log(JSON.stringify(status, null, 2));
     return;
   }
 
+  const playerNames = status.players.map(({ username }) => username);
   console.log(`Tournament: ${tournamentInfo.name}`);
   console.log(`Players: ${playerNames.join(", ")}`);
   if (status.tournamentType === "groupStage") {
