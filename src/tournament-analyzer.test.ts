@@ -282,7 +282,8 @@ describe("[group stage]", () => {
         assert(group.winner_method === "head-to-head");
       });
 
-      it.todo("should choose the group 3 winner based on Sonneborn-Berger scores", () => {
+      // TODO: implement S-B scores
+      it.skip("should choose the group 3 winner based on Sonneborn-Berger scores", () => {
         const status = analyzeTournamentProgress({ tournamentInfo, games });
         const group = getGroup(status, "Group 3");
         assert(group?.winner && !Array.isArray(group.winner));
@@ -290,7 +291,8 @@ describe("[group stage]", () => {
         assert(group.winner_method === "sonneborn-berger");
       });
 
-      it.todo("should choose the group 4 winner based on blitz tiebreaker", () => {
+      // TODO: implement blitz tiebreaker
+      it.skip("should choose the group 4 winner based on blitz tiebreaker", () => {
         const status = analyzeTournamentProgress({ tournamentInfo, games });
         const group = getGroup(status, "Group 4");
         assert(group?.winner && !Array.isArray(group.winner));
@@ -330,7 +332,9 @@ describe("[group stage]", () => {
       assert(status.groups[0].winner.some(({ username }) => username === "player2"));
     });
 
-    it.todo("should not choose a winner until all games are played", () => {
+    // TODO: decide if we should hide the winner or not.
+    // We could also always show the current winner.
+    it.skip("should not choose a winner until all games are played", () => {
       // Only 2 complete matchups (4 games) out of required 6 matchups (12 games)
       const incompleteGames = [
         // player1 vs player2 matchup (complete)
