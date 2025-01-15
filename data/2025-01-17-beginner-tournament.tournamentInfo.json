@@ -1,0 +1,15 @@
+{
+  "name": "January 2025 Beginners Tournament",
+  "tournamentType": "groupStage",
+  "dateRange": {
+    "start": "2025-01-18",
+    "end": "2025-02-16"
+  },
+  "expectedGameSettings": {
+    "size": 6,
+    "timertime": 900,
+    "timerinc": 10,
+    "komi": 4
+  },
+  "players": []
+}
