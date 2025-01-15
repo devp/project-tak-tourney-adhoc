@@ -2,7 +2,7 @@
  * Generated type guards for "types.ts".
  * WARNING: Do not manually change this file.
  */
-import type { TournamentType, TournamentPlayer, WinnerMethod, TournamentGroup, TournamentStatusBase, GroupTournamentStatus, KnockoutTournamentStatus, TournamentStatus, TournamentInfo, TournamentInfoFromJson } from "./types.ts";
+import type { TournamentType, TournamentPlayer, WinnerMethod, TournamentGroup, TournamentStatusBase, GroupTournamentStatus, KnockoutTournamentStatus, TournamentStatus, ExpectedGameSettings, TournamentInfo, TournamentInfoFromJson } from "./types.ts";
 
 export function isTournamentType(obj: unknown): obj is TournamentType {
     const typedObj = obj as TournamentType
@@ -107,6 +107,27 @@ export function isTournamentStatus(obj: unknown): obj is TournamentStatus {
     )
 }
 
+export function isExpectedGameSettings(obj: unknown): obj is ExpectedGameSettings {
+    const typedObj = obj as ExpectedGameSettings
+    return (
+        (typedObj !== null &&
+            typeof typedObj === "object" ||
+            typeof typedObj === "function") &&
+        (typeof typedObj["size"] === "undefined" ||
+            typeof typedObj["size"] === "number") &&
+        (typeof typedObj["timertime"] === "undefined" ||
+            typeof typedObj["timertime"] === "number") &&
+        (typeof typedObj["timerinc"] === "undefined" ||
+            typeof typedObj["timerinc"] === "number") &&
+        (typeof typedObj["komi"] === "undefined" ||
+            typeof typedObj["komi"] === "number") &&
+        (typeof typedObj["extra_time_amount"] === "undefined" ||
+            typeof typedObj["extra_time_amount"] === "number") &&
+        (typeof typedObj["extra_time_trigger"] === "undefined" ||
+            typeof typedObj["extra_time_trigger"] === "number")
+    )
+}
+
 export function isTournamentInfo(obj: unknown): obj is TournamentInfo {
     const typedObj = obj as TournamentInfo
     return (
@@ -127,7 +148,9 @@ export function isTournamentInfo(obj: unknown): obj is TournamentInfo {
         ) &&
         (typeof typedObj["status"] === "undefined" ||
             isGroupTournamentStatus(typedObj["status"]) as boolean ||
-            isKnockoutTournamentStatus(typedObj["status"]) as boolean)
+            isKnockoutTournamentStatus(typedObj["status"]) as boolean) &&
+        (typeof typedObj["expectedGameSettings"] === "undefined" ||
+            isExpectedGameSettings(typedObj["expectedGameSettings"]) as boolean)
     )
 }
 
@@ -147,6 +170,8 @@ export function isTournamentInfoFromJson(obj: unknown): obj is TournamentInfoFro
         (typeof typedObj["status"] === "undefined" ||
             isGroupTournamentStatus(typedObj["status"]) as boolean ||
             isKnockoutTournamentStatus(typedObj["status"]) as boolean) &&
+        (typeof typedObj["expectedGameSettings"] === "undefined" ||
+            isExpectedGameSettings(typedObj["expectedGameSettings"]) as boolean) &&
         (typedObj !== null &&
             typeof typedObj === "object" ||
             typeof typedObj === "function") &&

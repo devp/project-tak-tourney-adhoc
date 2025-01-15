@@ -1,3 +1,5 @@
+import { GameResult } from "./playtak-api/types.ts";
+
 export type TournamentType = "groupStage" | "knockoutStage";
 
 export type TournamentPlayer = {
@@ -42,6 +44,13 @@ export type KnockoutTournamentStatus = TournamentStatusBase & {
 
 export type TournamentStatus = GroupTournamentStatus | KnockoutTournamentStatus;
 
+export type ExpectedGameSettings = Partial<
+  Pick<
+    GameResult,
+    "size" | "timertime" | "timerinc" | "komi" | "extra_time_amount" | "extra_time_trigger"
+  >
+>;
+
 export type TournamentInfo = {
   name?: string;
   tournamentType: TournamentType;
@@ -51,6 +60,7 @@ export type TournamentInfo = {
   };
   players: Array<TournamentPlayer>;
   status?: TournamentStatus;
+  expectedGameSettings?: ExpectedGameSettings;
 };
 
 export type TournamentInfoFromJson = Omit<TournamentInfo, "dateRange"> & {
