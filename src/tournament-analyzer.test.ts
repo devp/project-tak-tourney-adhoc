@@ -154,6 +154,103 @@ describe("Given tournament with 12 grouped players (played from last week to tod
   });
 });
 
+describe("Given an input tournament and non-tournament games", () => {
+  const players = makeGroupedPlayers(2, "Group A");
+  const tournamentInfo: TournamentInfo = {
+    tournamentType: "groupStage",
+    players,
+    dateRange: {
+      start: oneWeekAgo,
+      end: today,
+    },
+  };
+
+  it("filters for tournament=1 always", () => {
+    const games = [
+      makeGameResult({
+        date: oneDayAgo.getTime(),
+        player_white: players[0].username,
+        player_black: players[1].username,
+        result: "1-0",
+        tournament: 0, // Non-tournament game
+      }),
+      makeGameResult({
+        date: oneDayAgo.getTime(),
+        player_white: players[0].username,
+        player_black: players[1].username,
+        result: "1-0",
+        tournament: 1, // Tournament game
+      }),
+    ];
+
+    const status = analyzeTournamentProgress({ tournamentInfo, games });
+    const totalGamesPlayed = status.players.reduce(
+      (sum, player) => sum + (player.games_played || 0),
+      0
+    );
+    assert.equal(totalGamesPlayed, 2, "Should only count the tournament game (tournament=1)");
+  });
+});
+
+describe("Given a tournament with expected game settings", () => {
+  const players = makeGroupedPlayers(2, "Group A");
+  const tournamentInfo: TournamentInfo = {
+    tournamentType: "groupStage",
+    players,
+    dateRange: {
+      start: oneWeekAgo,
+      end: today,
+    },
+    expectedGameSettings: {
+      size: 6,
+      timertime: 900,
+      timerinc: 10,
+    },
+  };
+
+  it("filters for game settings if set", () => {
+    const games = [
+      // Valid game matching all settings
+      makeGameResult({
+        date: oneDayAgo.getTime(),
+        player_white: players[0].username,
+        player_black: players[1].username,
+        result: "1-0",
+        size: 6,
+        timertime: 900,
+        timerinc: 10,
+      }),
+      // Invalid game with wrong size
+      makeGameResult({
+        date: oneDayAgo.getTime(),
+        player_white: players[0].username,
+        player_black: players[1].username,
+        result: "1-0",
+        size: 5,
+        timertime: 900,
+        timerinc: 10,
+      }),
+      // Invalid game with wrong timer settings
+      makeGameResult({
+        date: oneDayAgo.getTime(),
+        player_white: players[0].username,
+        player_black: players[1].username,
+        result: "1-0",
+        size: 6,
+        timertime: 600,
+        timerinc: 5,
+      }),
+    ];
+
+    const status = analyzeTournamentProgress({ tournamentInfo, games });
+    const totalGamesPlayed = status.players.reduce(
+      (sum, player) => sum + (player.games_played || 0),
+      0
+    );
+    assert.equal(totalGamesPlayed, 2, "Should only count games that match the expected settings");
+  });
+});
+
 describe("[group stage]", () => {
   describe("Given minimal tournament group of two players", () => {
     const players = makeGroupedPlayers(2, "Group A");
