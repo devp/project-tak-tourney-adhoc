@@ -50,6 +50,32 @@ function getHeadToHeadWinner(
   return winners.length === 1 ? winners[0] : null;
 }
 
+function isValidGameForTournament(game: GameResult, tournamentInfo: TournamentInfo): boolean {
+  const start = new Date(tournamentInfo.dateRange.start);
+  const end = new Date(tournamentInfo.dateRange.end);
+
+  // Check if game is within tournament date range
+  if (game.date < start.getTime() || game.date > end.getTime()) {
+    return false;
+  }
+
+  // Check if game is marked as tournament game
+  if (game.tournament !== 1) {
+    return false;
+  }
+
+  // Check if game settings match expected settings
+  if (tournamentInfo.expectedGameSettings) {
+    for (const [key, value] of Object.entries(tournamentInfo.expectedGameSettings)) {
+      if (game[key as keyof GameResult] !== value) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 function analyzeGroupTournamentProgress({
   tournamentInfo,
   games,
@@ -67,10 +93,7 @@ function analyzeGroupTournamentProgress({
 
   // update scores based on game results
   for (const game of games) {
-    if (
-      game.date < tournamentInfo.dateRange.start.getTime() ||
-      game.date > tournamentInfo.dateRange.end.getTime()
-    ) {
+    if (!isValidGameForTournament(game, tournamentInfo)) {
       continue;
     }
 
