@@ -19,43 +19,36 @@
 
 1. Upload CSV of players/groups, since this is currently manual.
 
-- TODO: move anything else up here?
+   Or if simple enough, make this database-driven.
 
 ## Required for the group stage
 
-1. Connect the service to USTA's site.
+1. [review] Connect the service to USTA's site.
 
    Options:
    - USTA HTML redirects to the site
    - USTA HTML has the results in an iframe
 
-2. Need to add caching to only hit the API say every 5 minutes
+2. [done] Need to add caching to only hit the API every 5 minutes
 
-3. Implement the other tie-breakers - SB and especially blitz games since that
-   is often what determines who wins the group stage.
-
-4. (easy) UI should give links to the individual games.
+3. UI should give links to the individual games.
 
    The way we have it at the moment is that each group has it's own page and by
    clicking the player name you can see match-ups.
 
-5. (easy) misc UI changes to have the same experience as the existing standings
-   page.
+4. misc UI changes to have the same experience as the existing standings page.
 
-6. Show players' matches, and what matches they have yet to play.
+5. Show players' matches, and what matches they have yet to play.
 
-7. Allow setting exceptions (ignoring/overriding API results, invalid games,
+## Required before end of group stage / before the knockout stage
+
+1. Allow setting exceptions (ignoring/overriding API results, invalid games,
    games that aren't in the DB for some reason, player withdrawals).
 
-## Required for the knockout stage
+2. Implement the other tie-breakers - SB and especially blitz games since that
+   is often what determines who wins the group stage.
 
-1. Need to implement knockout stage tournments.
-
-- TODO: move some stuff down here!
-
-## Nice to have but not required
-
-- TODO: move some stuff down here!
+3. Need to implement knockout stage tournments.
 
 # Roadmap for future usage
 
