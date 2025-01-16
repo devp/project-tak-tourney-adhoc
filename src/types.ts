@@ -53,6 +53,8 @@ export type ExpectedGameSettings = Partial<
 
 export type TournamentInfo = {
   name?: string;
+  // e.g. link to info PDF for tournament
+  infoUrl?: string;
   tournamentType: TournamentType;
   dateRange: {
     start: Date;
