@@ -30,6 +30,7 @@ export type TournamentGroup = {
 export type TournamentStatusBase = {
   tournamentType: unknown;
   players: Array<TournamentPlayer>;
+  games?: Array<GameResult>;
 };
 
 export type GroupTournamentStatus = TournamentStatusBase & {

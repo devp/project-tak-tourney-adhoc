@@ -91,12 +91,10 @@ function analyzeGroupTournamentProgress({
     ])
   );
 
-  // update scores based on game results
-  for (const game of games) {
-    if (!isValidGameForTournament(game, tournamentInfo)) {
-      continue;
-    }
+  const tournamentGames = games.filter((game) => isValidGameForTournament(game, tournamentInfo));
 
+  // update scores based on game results
+  for (const game of tournamentGames) {
     const whitePlayer = playerMapWithScores[game.player_white];
     const blackPlayer = playerMapWithScores[game.player_black];
     if (!whitePlayer || !blackPlayer) {
@@ -147,17 +145,19 @@ function analyzeGroupTournamentProgress({
       return {
         name: groupName,
         players: sortedPlayers,
+        games: tournamentGames,
         winner: tiedPlayers[0],
         winner_method: "score",
       };
     }
 
     // Try head-to-head tiebreaker
-    const headToHeadWinner = getHeadToHeadWinner(tournamentInfo, tiedPlayers, games);
+    const headToHeadWinner = getHeadToHeadWinner(tournamentInfo, tiedPlayers, tournamentGames);
     if (headToHeadWinner) {
       return {
         name: groupName,
         players: sortedPlayers,
+        games: tournamentGames,
         winner: headToHeadWinner,
         winner_method: "head-to-head",
       };
@@ -169,6 +169,7 @@ function analyzeGroupTournamentProgress({
     return {
       name: groupName,
       players: sortedPlayers,
+      games: tournamentGames,
       winner: tiedPlayers,
       winner_method: "score",
     };
@@ -178,6 +179,7 @@ function analyzeGroupTournamentProgress({
     tournamentType: "groupStage",
     players: Object.values(playerMapWithScores),
     groups,
+    games: tournamentGames,
   };
   return status;
 }
