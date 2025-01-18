@@ -115,6 +115,10 @@ describe("Given tournament with 12 grouped players (played from last week to tod
     const games = makeGameResultsForPlayers(10, players, oneDayAgo);
     const status = analyzeTournamentProgress({ tournamentInfo, games });
 
+    it("has all 10 games in status", () => {
+      assert.equal(status.games?.length, 10);
+    });
+
     it("calculates games_played, summing to 20", () => {
       assert(
         status.players.every(
@@ -139,6 +143,7 @@ describe("Given tournament with 12 grouped players (played from last week to tod
     const status = analyzeTournamentProgress({ tournamentInfo, games });
 
     it("filters for games within tournament date range", () => {
+      assert.equal(status.games?.length, 10);
       const totalGamesPlayed = sum(status.players.map(({ games_played }) => games_played ?? 0));
       assert.equal(
         totalGamesPlayed,
@@ -179,6 +184,7 @@ describe("Given an input tournament and non-tournament games", () => {
     ];
 
     const status = analyzeTournamentProgress({ tournamentInfo, games });
+    assert.equal(status.games?.length, 1);
     const totalGamesPlayed = sum(status.players.map(({ games_played }) => games_played ?? 0));
     assert.equal(totalGamesPlayed, 2, "Should only count the tournament game (tournament=1)");
   });
@@ -235,6 +241,7 @@ describe("Given a tournament with expected game settings", () => {
     ];
 
     const status = analyzeTournamentProgress({ tournamentInfo, games });
+    assert.equal(status.games?.length, 1);
     const totalGamesPlayed = sum(status.players.map(({ games_played }) => games_played ?? 0));
     assert.equal(totalGamesPlayed, 2, "Should only count games that match the expected settings");
   });
