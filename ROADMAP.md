@@ -34,12 +34,12 @@
 3. [done] misc UI changes to have the same experience as the existing standings
    page.
 
-4. UI should give links to the individual games.
+4. [done] UI should give links to the individual games.
 
    The way we have it at the moment is that each group has it's own page and by
    clicking the player name you can see match-ups.
 
-5. Show players' matches, and what matches they have yet to play.
+5. [done] Show players' matches, and what matches they have yet to play.
 
 ## Required before end of group stage / before the knockout stage
 
@@ -72,3 +72,7 @@
 
    - when creating a seek for the tournament, there should be an interface where
      the player selects the game to play and sets up a seek with the parameter
+
+4. generating permanent endpoints (maintaining a historical record)
+
+   - generating static HTML after the tournament is over?
