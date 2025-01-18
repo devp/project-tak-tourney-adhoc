@@ -6,6 +6,7 @@ import { GameResultTypes } from "./constants.ts";
 
 import type { TournamentInfo, TournamentPlayer, TournamentStatus } from "./types.ts";
 import type { GameResult, GameResultType } from "./playtak-api/types.ts";
+import { sum } from "./utils.ts";
 
 // range of tournament
 const today = new Date();
@@ -121,10 +122,7 @@ describe("Given tournament with 12 grouped players (played from last week to tod
         ),
         "Each player should have games_played count"
       );
-      const totalGamesPlayed = status.players.reduce(
-        (sum, player) => sum + (player.games_played || 0),
-        0
-      );
+      const totalGamesPlayed = sum(status.players.map(({ games_played }) => games_played ?? 0));
       assert.equal(
         totalGamesPlayed,
         20,
@@ -141,10 +139,7 @@ describe("Given tournament with 12 grouped players (played from last week to tod
     const status = analyzeTournamentProgress({ tournamentInfo, games });
 
     it("filters for games within tournament date range", () => {
-      const totalGamesPlayed = status.players.reduce(
-        (sum, player) => sum + (player.games_played || 0),
-        0
-      );
+      const totalGamesPlayed = sum(status.players.map(({ games_played }) => games_played ?? 0));
       assert.equal(
         totalGamesPlayed,
         20,
@@ -184,10 +179,7 @@ describe("Given an input tournament and non-tournament games", () => {
     ];
 
     const status = analyzeTournamentProgress({ tournamentInfo, games });
-    const totalGamesPlayed = status.players.reduce(
-      (sum, player) => sum + (player.games_played || 0),
-      0
-    );
+    const totalGamesPlayed = sum(status.players.map(({ games_played }) => games_played ?? 0));
     assert.equal(totalGamesPlayed, 2, "Should only count the tournament game (tournament=1)");
   });
 });
@@ -243,10 +235,7 @@ describe("Given a tournament with expected game settings", () => {
     ];
 
     const status = analyzeTournamentProgress({ tournamentInfo, games });
-    const totalGamesPlayed = status.players.reduce(
-      (sum, player) => sum + (player.games_played || 0),
-      0
-    );
+    const totalGamesPlayed = sum(status.players.map(({ games_played }) => games_played ?? 0));
     assert.equal(totalGamesPlayed, 2, "Should only count games that match the expected settings");
   });
 });

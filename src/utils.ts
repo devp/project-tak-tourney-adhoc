@@ -14,3 +14,7 @@ export const groupBy = <T, K extends string | number | symbol>(
     {} as Record<K, T[]>
   );
 };
+
+export const sum = (values: number[]): number => {
+  return values.reduce((acc, curr) => acc + curr, 0);
+};
