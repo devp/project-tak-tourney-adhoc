@@ -3,6 +3,7 @@
  * WARNING: Do not manually change this file.
  */
 import type { TournamentType, TournamentPlayer, WinnerMethod, TournamentGroup, TournamentStatusBase, GroupTournamentStatus, KnockoutTournamentStatus, TournamentStatus, ExpectedGameSettings, TournamentInfo, TournamentInfoFromJson } from "./types.ts";
+import { isGameResult } from "./playtak-api/types.guard.ts";
 
 export function isTournamentType(obj: unknown): obj is TournamentType {
     const typedObj = obj as TournamentType
@@ -69,7 +70,12 @@ export function isTournamentStatusBase(obj: unknown): obj is TournamentStatusBas
         Array.isArray(typedObj["players"]) &&
         typedObj["players"].every((e: any) =>
             isTournamentPlayer(e) as boolean
-        )
+        ) &&
+        (typeof typedObj["games"] === "undefined" ||
+            Array.isArray(typedObj["games"]) &&
+            typedObj["games"].every((e: any) =>
+                isGameResult(e) as boolean
+            ))
     )
 }
 
@@ -136,6 +142,8 @@ export function isTournamentInfo(obj: unknown): obj is TournamentInfo {
             typeof typedObj === "function") &&
         (typeof typedObj["name"] === "undefined" ||
             typeof typedObj["name"] === "string") &&
+        (typeof typedObj["infoUrl"] === "undefined" ||
+            typeof typedObj["infoUrl"] === "string") &&
         isTournamentType(typedObj["tournamentType"]) as boolean &&
         (typedObj["dateRange"] !== null &&
             typeof typedObj["dateRange"] === "object" ||
@@ -162,6 +170,8 @@ export function isTournamentInfoFromJson(obj: unknown): obj is TournamentInfoFro
             typeof typedObj === "function") &&
         (typeof typedObj["name"] === "undefined" ||
             typeof typedObj["name"] === "string") &&
+        (typeof typedObj["infoUrl"] === "undefined" ||
+            typeof typedObj["infoUrl"] === "string") &&
         isTournamentType(typedObj["tournamentType"]) as boolean &&
         Array.isArray(typedObj["players"]) &&
         typedObj["players"].every((e: any) =>
