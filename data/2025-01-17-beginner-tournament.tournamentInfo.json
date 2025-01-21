@@ -8,8 +8,7 @@
   "expectedGameSettings": {
     "size": 6,
     "timertime": 900,
-    "timerinc": 10,
-    "komi": 4
+    "timerinc": 10
   },
   "players": []
 }
