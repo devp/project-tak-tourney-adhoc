@@ -2,11 +2,11 @@ import { describe, it } from "node:test";
 import assert from "node:assert";
 
 import { analyzeTournamentProgress } from "./tournament-analyzer.ts";
-import { GameResultTypes } from "./constants.ts";
 
-import type { TournamentInfo, TournamentPlayer, TournamentStatus } from "./types.ts";
+import type { TournamentInfo, TournamentStatus } from "./types.ts";
 import type { GameResult, GameResultType } from "./playtak-api/types.ts";
 import { sum } from "./utils.ts";
+import { makeGameResult, makeGameResultsForPlayers } from "./testUtil/gameUtil.ts";
 
 // range of tournament
 const today = new Date();
@@ -16,55 +16,12 @@ const oneDayAgo = new Date(today.getTime() - 24 * 60 * 60 * 1000);
 // games outside range to ignore
 const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-let gameResultCounter = 1;
-
-function getGameResultAtIndex(index: number) {
-  return Object.values(GameResultTypes)[index % Object.values(GameResultTypes).length];
-}
-
-function makeGameResult(overrides: Partial<GameResult> = {}): GameResult {
-  return {
-    id: gameResultCounter++,
-    date: 1732382649194,
-    size: 6,
-    player_white: "player1",
-    player_black: "player2",
-    notation: "",
-    result: "R-0",
-    timertime: 900,
-    timerinc: 10,
-    rating_white: 1500,
-    rating_black: 1500,
-    unrated: 0,
-    tournament: 1,
-    komi: 4,
-    pieces: 30,
-    capstones: 1,
-    rating_change_white: 0,
-    rating_change_black: 0,
-    extra_time_amount: 0,
-    extra_time_trigger: 0,
-    ...overrides,
-  };
-}
-
 function makeGroupedPlayers(numPlayers: number, groupName?: string) {
   // Fill up groups before going to next group
   return Array.from({ length: numPlayers }, (_, index) => ({
     username: `player${index + 1}`,
     group: groupName ?? `Group ${Math.floor(index / 4) + 1}`,
   }));
-}
-
-function makeGameResultsForPlayers(numGames: number, players: Array<TournamentPlayer>, date: Date) {
-  return Array.from({ length: numGames }, (_, index) =>
-    makeGameResult({
-      date: date.getTime(),
-      player_white: players[index % 12].username,
-      player_black: players[(index + 1) % 12].username,
-      result: getGameResultAtIndex(index),
-    })
-  );
 }
 
 function makeMatchup(
