@@ -1,4 +1,4 @@
-export type GameResultType = "R-0" | "0-R" | "F-0" | "0-F" | "1/2-1/2" | "1-0" | "0-1";
+export type GameResultType = "R-0" | "0-R" | "F-0" | "0-F" | "1/2-1/2" | "1-0" | "0-1" | "0-0";
 
 export type GameResult = {
   id: number;

@@ -13,6 +13,9 @@ export const GameResultTypes = {
   DRAW: "1/2-1/2",
   WHITE_FORFEIT: "1-0",
   BLACK_FORFEIT: "0-1",
+
+  // Unsure what this result, but it is sometimes returned.
+  ZERO_ZERO: "0-0",
 } as const satisfies Record<string, GameResultType>;
 
 export const WINS_FOR_WHITE: GameResultType[] = [
@@ -28,3 +31,5 @@ export const WINS_FOR_BLACK: GameResultType[] = [
 ] as const;
 
 export const TIES: GameResultType[] = [GameResultTypes.DRAW] as const;
+
+export const IGNORE_RESULTS: GameResultType[] = [GameResultTypes.ZERO_ZERO] as const;
