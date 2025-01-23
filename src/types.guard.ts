@@ -158,7 +158,65 @@ export function isTournamentInfo(obj: unknown): obj is TournamentInfo {
             isGroupTournamentStatus(typedObj["status"]) as boolean ||
             isKnockoutTournamentStatus(typedObj["status"]) as boolean) &&
         (typeof typedObj["expectedGameSettings"] === "undefined" ||
-            isExpectedGameSettings(typedObj["expectedGameSettings"]) as boolean)
+            isExpectedGameSettings(typedObj["expectedGameSettings"]) as boolean) &&
+        (typeof typedObj["exceptions"] === "undefined" ||
+            Array.isArray(typedObj["exceptions"]) &&
+            typedObj["exceptions"].every((e: any) =>
+            ((e !== null &&
+                typeof e === "object" ||
+                typeof e === "function") &&
+                e["timestamp"] instanceof Date &&
+                (typeof e["reason"] === "undefined" ||
+                    typeof e["reason"] === "string") &&
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["type"] === "ignoreGame" &&
+                typeof e["gameId"] === "number" ||
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["timestamp"] instanceof Date &&
+                (typeof e["reason"] === "undefined" ||
+                    typeof e["reason"] === "string") &&
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["type"] === "addGame" &&
+                typeof e["gameId"] === "number" &&
+                (e["category"] === "blitz" ||
+                    e["category"] === "regular") ||
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["timestamp"] instanceof Date &&
+                (typeof e["reason"] === "undefined" ||
+                    typeof e["reason"] === "string") &&
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["type"] === "overrideGameResult" &&
+                typeof e["gameId"] === "number" &&
+                (e["category"] === "blitz" ||
+                    e["category"] === "regular") &&
+                isGameResult(e["result"]) as boolean ||
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["timestamp"] instanceof Date &&
+                (typeof e["reason"] === "undefined" ||
+                    typeof e["reason"] === "string") &&
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["type"] === "manualResult" &&
+                Array.isArray(e["players"]) &&
+                typeof e["players"][0] === "string" &&
+                typeof e["players"][1] === "string" &&
+                (e["category"] === "blitz" ||
+                    e["category"] === "regular") &&
+                isGameResult(e["result"]) as boolean)
+            ))
     )
 }
 
@@ -182,6 +240,64 @@ export function isTournamentInfoFromJson(obj: unknown): obj is TournamentInfoFro
             isKnockoutTournamentStatus(typedObj["status"]) as boolean) &&
         (typeof typedObj["expectedGameSettings"] === "undefined" ||
             isExpectedGameSettings(typedObj["expectedGameSettings"]) as boolean) &&
+        (typeof typedObj["exceptions"] === "undefined" ||
+            Array.isArray(typedObj["exceptions"]) &&
+            typedObj["exceptions"].every((e: any) =>
+            ((e !== null &&
+                typeof e === "object" ||
+                typeof e === "function") &&
+                e["timestamp"] instanceof Date &&
+                (typeof e["reason"] === "undefined" ||
+                    typeof e["reason"] === "string") &&
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["type"] === "ignoreGame" &&
+                typeof e["gameId"] === "number" ||
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["timestamp"] instanceof Date &&
+                (typeof e["reason"] === "undefined" ||
+                    typeof e["reason"] === "string") &&
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["type"] === "addGame" &&
+                typeof e["gameId"] === "number" &&
+                (e["category"] === "blitz" ||
+                    e["category"] === "regular") ||
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["timestamp"] instanceof Date &&
+                (typeof e["reason"] === "undefined" ||
+                    typeof e["reason"] === "string") &&
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["type"] === "overrideGameResult" &&
+                typeof e["gameId"] === "number" &&
+                (e["category"] === "blitz" ||
+                    e["category"] === "regular") &&
+                isGameResult(e["result"]) as boolean ||
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["timestamp"] instanceof Date &&
+                (typeof e["reason"] === "undefined" ||
+                    typeof e["reason"] === "string") &&
+                (e !== null &&
+                    typeof e === "object" ||
+                    typeof e === "function") &&
+                e["type"] === "manualResult" &&
+                Array.isArray(e["players"]) &&
+                typeof e["players"][0] === "string" &&
+                typeof e["players"][1] === "string" &&
+                (e["category"] === "blitz" ||
+                    e["category"] === "regular") &&
+                isGameResult(e["result"]) as boolean)
+            )) &&
         (typedObj !== null &&
             typeof typedObj === "object" ||
             typeof typedObj === "function") &&

@@ -1,4 +1,5 @@
-import { GameResult } from "./playtak-api/types.ts";
+import type { GameResult } from "./playtak-api/types.ts";
+import type { TournamentException } from "./tournament-exception-types.ts";
 
 export type TournamentType = "groupStage" | "knockoutStage";
 
@@ -64,6 +65,7 @@ export type TournamentInfo = {
   players: Array<TournamentPlayer>;
   status?: TournamentStatus;
   expectedGameSettings?: ExpectedGameSettings;
+  exceptions?: TournamentException[];
 };
 
 export type TournamentInfoFromJson = Omit<TournamentInfo, "dateRange"> & {
