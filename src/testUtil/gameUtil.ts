@@ -38,8 +38,8 @@ function makeGameResultsForPlayers(numGames: number, players: Array<TournamentPl
   return Array.from({ length: numGames }, (_, index) =>
     makeGameResult({
       date: date.getTime(),
-      player_white: players[index % 12].username,
-      player_black: players[(index + 1) % 12].username,
+      player_white: players[index % players.length].username,
+      player_black: players[(index + 1) % players.length].username,
       result: getGameResultAtIndex(index),
     })
   );
