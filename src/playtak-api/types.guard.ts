@@ -13,7 +13,8 @@ export function isGameResultType(obj: unknown): obj is GameResultType {
             typedObj === "0-F" ||
             typedObj === "1/2-1/2" ||
             typedObj === "1-0" ||
-            typedObj === "0-1")
+            typedObj === "0-1" ||
+            typedObj === "0-0")
     )
 }
 
