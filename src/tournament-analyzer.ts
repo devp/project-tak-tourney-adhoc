@@ -125,7 +125,7 @@ function analyzeGroupTournamentProgress({
       whitePlayer.score += 1;
       blackPlayer.score += 1;
     } else {
-      throw new Error(`Unknown game result: ${game.result}`);
+      // TODO: log a warning, but for now, ignore these games
     }
 
     whitePlayer.games_played += 1;
