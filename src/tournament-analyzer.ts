@@ -50,9 +50,45 @@ function getHeadToHeadWinner(
   return winners.length === 1 ? winners[0] : null;
 }
 
+/**
+ * If returns true or false, return that and stop processing.
+ * If returns null, continue processing.
+ */
+function exceptionOverrideOfIsValidGame(
+  game: GameResult,
+  tournamentInfo: TournamentInfo
+): boolean | null {
+  if (!tournamentInfo.exceptions) {
+    return null;
+  }
+
+  // Check for ignore exceptions
+  const ignoreException = tournamentInfo.exceptions.find(
+    (e) => e.type === "ignoreGame" && e.gameId === game.id
+  );
+  if (ignoreException) {
+    return false;
+  }
+
+  // Check for add exceptions
+  const addException = tournamentInfo.exceptions.find(
+    (e) => e.type === "addGame" && e.gameId === game.id
+  );
+  if (addException) {
+    return true;
+  }
+
+  return null;
+}
+
 function isValidGameForTournament(game: GameResult, tournamentInfo: TournamentInfo): boolean {
   const start = new Date(tournamentInfo.dateRange.start);
   const end = new Date(tournamentInfo.dateRange.end);
+
+  const exceptionOverride = exceptionOverrideOfIsValidGame(game, tournamentInfo);
+  if (exceptionOverride !== null) {
+    return exceptionOverride;
+  }
 
   // Check if game is within tournament date range
   if (game.date < start.getTime() || game.date > end.getTime()) {
@@ -195,4 +231,8 @@ export function analyzeTournamentProgress({
     return analyzeGroupTournamentProgress({ tournamentInfo, games });
   }
   throw new Error("Unsupported tournament type");
+}
+
+export function additionalGameIdsToFetch(tournamentInfo: TournamentInfo): number[] {
+  return tournamentInfo.exceptions?.filter((e) => e.type === "addGame")?.map((e) => e.gameId) ?? [];
 }
