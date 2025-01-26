@@ -19,8 +19,8 @@ export type GameResult = {
   capstones: number;
   rating_change_white: number;
   rating_change_black: number;
-  extra_time_amount: number;
-  extra_time_trigger: number;
+  extra_time_amount?: number;
+  extra_time_trigger?: number;
 };
 
 export type GameListResponse = {
