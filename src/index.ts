@@ -1,5 +1,5 @@
 // Re-export main analyzer function
-export { analyzeTournamentProgress } from "./tournament-analyzer.ts";
+export { analyzeTournamentProgress, additionalGameIdsToFetch } from "./tournament-analyzer.ts";
 
 // Re-export types in namespaces
 import type * as TournamentStatusTypes from "./types.ts";
