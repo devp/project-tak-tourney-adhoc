@@ -18,3 +18,12 @@ export const groupBy = <T, K extends string | number | symbol>(
 export const sum = (values: number[]): number => {
   return values.reduce((acc, curr) => acc + curr, 0);
 };
+
+export const uniqBy = <T, K extends string | number | symbol>(
+  array: T[],
+  getKey: (item: T) => K
+): T[] => {
+  return array.filter(
+    (item, index, self) => self.findIndex((i) => getKey(i) === getKey(item)) === index
+  );
+};
