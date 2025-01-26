@@ -45,8 +45,10 @@ export function isGameResult(obj: unknown): obj is GameResult {
         typeof typedObj["capstones"] === "number" &&
         typeof typedObj["rating_change_white"] === "number" &&
         typeof typedObj["rating_change_black"] === "number" &&
-        typeof typedObj["extra_time_amount"] === "number" &&
-        typeof typedObj["extra_time_trigger"] === "number"
+        (typeof typedObj["extra_time_amount"] === "undefined" ||
+            typeof typedObj["extra_time_amount"] === "number") &&
+        (typeof typedObj["extra_time_trigger"] === "undefined" ||
+            typeof typedObj["extra_time_trigger"] === "number")
     )
 }
 
