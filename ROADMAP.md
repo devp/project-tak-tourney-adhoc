@@ -43,7 +43,7 @@
 
 ## Required before end of group stage / before the knockout stage
 
-1. Allow setting exceptions (ignoring/overriding API results, invalid games,
+1. [partial] Allow setting exceptions (ignoring/overriding API results, invalid games,
    games that aren't in the DB for some reason, player withdrawals).
 
 2. Implement the other tie-breakers - SB and especially blitz games since that
@@ -51,9 +51,9 @@
 
 3. Need to implement knockout stage tournments.
 
-4. Get players/groups from database.
+4. [done] Get players/groups from database.
 
-5. Admin UI (with simple password) for setting exceptions and modifying
+5. [done] Admin UI (with simple password) for setting exceptions and modifying
    players/groups.
 
 # Roadmap for future usage
