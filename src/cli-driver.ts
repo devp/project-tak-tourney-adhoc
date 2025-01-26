@@ -1,7 +1,7 @@
 import { analyzeTournamentProgress } from "./tournament-analyzer.ts";
 import { readFile } from "node:fs/promises";
 import { isGameListResponse } from "./playtak-api/types.guard.ts";
-import { isTournamentInfoFromJson } from "./types.guard.ts";
+import { isTournamentInfo } from "./types.guard.ts";
 import type { GameResult } from "./playtak-api/types.ts";
 import type { TournamentInfo, TournamentPlayer, TournamentStatus } from "./types.ts";
 
@@ -25,15 +25,8 @@ async function readJsonFile<T>(filePath: string): Promise<T> {
 }
 
 async function getTournamentInfoFromJsonFile(filename: string): Promise<TournamentInfo> {
-  const response = await readJsonFile<unknown>(filename);
-  if (isTournamentInfoFromJson(response)) {
-    const info: TournamentInfo = {
-      ...response,
-      dateRange: {
-        start: new Date(response.dateRange.start),
-        end: new Date(response.dateRange.end),
-      },
-    };
+  const info = await readJsonFile<unknown>(filename);
+  if (isTournamentInfo(info)) {
     return info;
   } else {
     throw new Error("Invalid tournament info format");

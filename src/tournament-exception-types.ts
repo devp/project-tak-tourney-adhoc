@@ -1,7 +1,8 @@
 import type { GameResult } from "./playtak-api/types.ts";
 
 export type TournamentExceptionBase = {
-  timestamp: Date;
+  /** ISO timestamp */
+  timestamp: string;
   reason?: string;
 };
 

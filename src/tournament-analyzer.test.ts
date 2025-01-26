@@ -63,8 +63,8 @@ describe("Given tournament with 12 grouped players (played from last week to tod
     tournamentType: "groupStage",
     players,
     dateRange: {
-      start: oneWeekAgo,
-      end: today,
+      start: oneWeekAgo.toISOString(),
+      end: today.toISOString(),
     },
   };
 
@@ -117,8 +117,8 @@ describe("Given an input tournament and non-tournament games", () => {
     tournamentType: "groupStage",
     players,
     dateRange: {
-      start: oneWeekAgo,
-      end: today,
+      start: oneWeekAgo.toISOString(),
+      end: today.toISOString(),
     },
   };
 
@@ -153,8 +153,8 @@ describe("Given a tournament with expected game settings", () => {
     tournamentType: "groupStage",
     players,
     dateRange: {
-      start: oneWeekAgo,
-      end: today,
+      start: oneWeekAgo.toISOString(),
+      end: today.toISOString(),
     },
     expectedGameSettings: {
       size: 6,
@@ -211,8 +211,8 @@ describe("[group stage]", () => {
       tournamentType: "groupStage",
       players,
       dateRange: {
-        start: oneWeekAgo,
-        end: today,
+        start: oneWeekAgo.toISOString(),
+        end: today.toISOString(),
       },
     };
     describe("and results of 1 W 1 T", () => {
@@ -251,8 +251,8 @@ describe("[group stage]", () => {
       tournamentType: "groupStage",
       players,
       dateRange: {
-        start: oneWeekAgo,
-        end: today,
+        start: oneWeekAgo.toISOString(),
+        end: today.toISOString(),
       },
     };
 
@@ -359,8 +359,8 @@ describe("[group stage]", () => {
       tournamentType: "groupStage",
       players,
       dateRange: {
-        start: oneWeekAgo,
-        end: today,
+        start: oneWeekAgo.toISOString(),
+        end: today.toISOString(),
       },
     };
 

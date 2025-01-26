@@ -17,8 +17,8 @@ describe("Tournament Exception Behavior in TournamentInfo", () => {
   const baseTournamentInfo: TournamentInfo = {
     tournamentType: "groupStage",
     dateRange: {
-      start: startDate,
-      end: endDate,
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
     },
     players: [
       { username: "player1", group: "Group A" },
@@ -34,7 +34,7 @@ describe("Tournament Exception Behavior in TournamentInfo", () => {
       const gameId = games[0].id;
       const ignoreException: IgnoreGameException = {
         type: "ignoreGame",
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         gameId,
       };
 
@@ -52,8 +52,8 @@ describe("Tournament Exception Behavior in TournamentInfo", () => {
   describe("AddGameException in TournamentInfo", () => {
     it("should list additional gameIds to fetch", () => {
       const exceptions: AddGameException[] = [
-        { type: "addGame", timestamp: new Date(), gameId: 1, category: "regular" },
-        { type: "addGame", timestamp: new Date(), gameId: 2, category: "regular" },
+        { type: "addGame", timestamp: new Date().toISOString(), gameId: 1, category: "regular" },
+        { type: "addGame", timestamp: new Date().toISOString(), gameId: 2, category: "regular" },
       ];
       const tournamentInfo = {
         ...baseTournamentInfo,
@@ -72,7 +72,7 @@ describe("Tournament Exception Behavior in TournamentInfo", () => {
 
       const addException: AddGameException = {
         type: "addGame",
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         gameId: nonTournamentGame.id,
         category: "regular",
       };
@@ -102,7 +102,7 @@ describe("Tournament Exception Behavior in TournamentInfo", () => {
 
       const overrideException: OverrideGameResultException = {
         type: "overrideGameResult",
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         gameId: 1,
         category: "regular",
         result: makeGameResult({
@@ -126,7 +126,7 @@ describe("Tournament Exception Behavior in TournamentInfo", () => {
       // TODO: need to think more about how to test this
       const manualException: ManualResultException = {
         type: "manualResult",
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         players: ["player1", "player2"],
         category: "regular",
         result: makeGameResult({

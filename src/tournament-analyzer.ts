@@ -22,7 +22,10 @@ function getHeadToHeadWinner(
 
   // Calculate head-to-head scores among tied players
   for (const game of games) {
-    if (game.date < info.dateRange.start.getTime() || game.date > info.dateRange.end.getTime()) {
+    if (
+      game.date < new Date(info.dateRange.start).getTime() ||
+      game.date > new Date(info.dateRange.end).getTime()
+    ) {
       continue;
     }
 

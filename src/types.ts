@@ -59,18 +59,13 @@ export type TournamentInfo = {
   infoUrl?: string;
   tournamentType: TournamentType;
   dateRange: {
-    start: Date;
-    end: Date;
+    /** ISO timestamp */
+    start: string;
+    /** ISO timestamp */
+    end: string;
   };
   players: Array<TournamentPlayer>;
   status?: TournamentStatus;
   expectedGameSettings?: ExpectedGameSettings;
   exceptions?: TournamentException[];
-};
-
-export type TournamentInfoFromJson = Omit<TournamentInfo, "dateRange"> & {
-  dateRange: {
-    start: string;
-    end: string;
-  };
 };
