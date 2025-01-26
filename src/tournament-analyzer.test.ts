@@ -204,6 +204,46 @@ describe("Given a tournament with expected game settings", () => {
   });
 });
 
+describe("Given tournament with duplicate game IDs", () => {
+  const players = makeGroupedPlayers(2, "Group A");
+  const tournamentInfo: TournamentInfo = {
+    tournamentType: "groupStage",
+    players,
+    dateRange: {
+      start: oneWeekAgo.toISOString(),
+      end: today.toISOString(),
+    },
+  };
+
+  it("should only count each game once based on ID", () => {
+    const duplicateId = 12345;
+    const games = [
+      makeGameResult({
+        id: duplicateId,
+        date: oneDayAgo.getTime(),
+        player_white: players[0].username,
+        player_black: players[1].username,
+        result: "1-0",
+        tournament: 1,
+      }),
+      // Same game ID but with different result
+      makeGameResult({
+        id: duplicateId,
+        date: oneDayAgo.getTime(),
+        player_white: players[0].username,
+        player_black: players[1].username,
+        result: "0-1",
+        tournament: 1,
+      }),
+    ];
+
+    const status = analyzeTournamentProgress({ tournamentInfo, games });
+    assert.equal(status.games?.length, 1, "Should only include one game");
+    const totalGamesPlayed = sum(status.players.map(({ games_played }) => games_played ?? 0));
+    assert.equal(totalGamesPlayed, 2, "Should only count one game (2 player-games)");
+  });
+});
+
 describe("[group stage]", () => {
   describe("Given minimal tournament group of two players", () => {
     const players = makeGroupedPlayers(2, "Group A");

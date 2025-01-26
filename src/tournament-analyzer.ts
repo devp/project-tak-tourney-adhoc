@@ -7,7 +7,7 @@ import type {
   TournamentPlayer,
   TournamentStatus,
 } from "./types.ts";
-import { groupBy } from "./utils.ts";
+import { groupBy, uniqBy } from "./utils.ts";
 
 const UNGROUPED = "UNGROUPED";
 
@@ -130,7 +130,9 @@ function analyzeGroupTournamentProgress({
     ])
   );
 
-  const tournamentGames = games.filter((game) => isValidGameForTournament(game, tournamentInfo));
+  const tournamentGames = uniqBy(games, (g) => g.id).filter((game) =>
+    isValidGameForTournament(game, tournamentInfo)
+  );
 
   // update scores based on game results
   for (const game of tournamentGames) {
